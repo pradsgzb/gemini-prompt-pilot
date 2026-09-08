@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Pilot</title>
+  <link rel="stylesheet" href="src/popup/popup.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div class="brand-mark">PP</div>
+      <div>
+        <h1>Prompt Pilot</h1>
+        <p id="siteSummary">Detecting site…</p>
+      </div>
+      <span id="statusPill" class="pill">Idle</span>
+    </header>
+
+    <section class="panel compact-grid">
+      <label>
+        <span>Parsing</span>
+        <select id="promptMode">
+          <option value="lines">One prompt per line</option>
+          <option value="blocks">Blank line blocks</option>
+          <option value="separator">Custom separator</option>
+        </select>
+      </label>
+      <label id="separatorWrap" class="hidden">
+        <span>Separator</span>
+        <input id="promptSeparator" type="text" value="---">
+      </label>
+      <label>
+        <span>Cooldown</span>
+        <input id="cooldownMs" type="number" min="0" step="1000">
+      </label>
+      <label>
+        <span>Log level</span>
+        <select id="logLevel">
+          <option value="error">Error</option>
+          <option value="warn">Warn</option>
+          <option value="info">Info</option>
+          <option value="debug">Debug</option>
+          <option value="verbose">Verbose</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="panel prompt-panel">
+      <div class="section-title">
+        <span>Prompts</span>
+        <small id="promptCount">0 prompts</small>
+      </div>
+      <textarea id="promptText" spellcheck="false" placeholder="Paste prompts here, one prompt per line"></textarea>
+    </section>
+
+    <section class="panel options-panel">
+      <label id="newChatWrap" class="check-row hidden">
+        <input id="newChatEnabled" type="checkbox">
+        <span>New chat after every</span>
+        <input id="newChatEvery" type="number" min="1" step="1">
+        <span>images</span>
+      </label>
+
+      <label id="downloadWrap" class="check-row hidden">
+        <input id="downloadEnabled" type="checkbox">
+        <span>Download each generated image as JPEG with prompt in EXIF comments</span>
+      </label>
+
+      <details>
+        <summary>Advanced timing</summary>
+        <div class="advanced-grid">
+          <label><span>Generation timeout</span><input id="generationTimeoutMs" type="number" min="1000" step="1000"></label>
+          <label><span>Idle settle</span><input id="idleSettleMs" type="number" min="0" step="100"></label>
+          <label><span>Submit timeout</span><input id="submitTimeoutMs" type="number" min="1000" step="1000"></label>
+          <label><span>Submit-control wait cycles</span><input id="maxSubmitRetries" type="number" min="1" max="10" step="1"></label>
+          <label><span>Prompt retries after first attempt (0 = none)</span><input id="maxPromptRetries" type="number" min="0" step="1"></label>
+        </div>
+        <label class="check-row"><input id="retryEnabled" type="checkbox"><span>Retry failed prompt before continuing</span></label>
+        <label class="check-row"><input id="reloadTimedOutChat" type="checkbox"><span>Reload timed-out chat before retry</span></label>
+      </details>
+    </section>
+
+    <section class="progress-card">
+      <div class="progress-meta">
+        <span id="runMessage">Ready</span>
+        <span id="progressText">0/0</span>
+      </div>
+      <div class="progress-track"><div id="progressFill"></div></div>
+    </section>
+
+    <footer class="actions">
+      <button id="optionsButton" class="secondary" type="button">Settings</button>
+      <button id="stopButton" class="danger" type="button">Stop</button>
+      <button id="startButton" class="primary" type="button">Start</button>
+    </footer>
+
+    <section class="log-panel">
+      <div class="section-title"><span>Logs</span><button id="clearLogs" type="button">Clear</button></div>
+      <div id="logs" class="logs"></div>
+    </section>
+  </main>
+
+  <script src="src/shared/constants.js"></script>
+  <script src="src/shared/default-settings.js"></script>
+  <script src="src/shared/site-configs.js"></script>
+  <script src="src/shared/utils.js"></script>
+  <script src="src/shared/logger.js"></script>
+  <script src="src/shared/settings-repository.js"></script>
+  <script src="src/content/prompt-parser.js"></script>
+  <script src="src/content/site-resolver.js"></script>
+  <script src="src/popup/popup.js"></script>
+</body>
+</html>

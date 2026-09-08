@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Pilot Settings</title>
+  <link rel="stylesheet" href="src/options/options.css">
+</head>
+<body>
+  <main class="settings-shell">
+    <header class="settings-hero">
+      <div class="brand-mark">PP</div>
+      <div>
+        <h1>Prompt Pilot Settings</h1>
+        <p>Configure automation timing, logging, download behavior and site selectors.</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>General</h2>
+      <div class="grid">
+        <label><span>Log level</span><select id="logLevel"><option value="error">Error</option><option value="warn">Warn</option><option value="info">Info</option><option value="debug">Debug</option><option value="verbose">Verbose</option></select></label>
+        <label><span>Cooldown period, ms</span><input id="cooldownMs" type="number" min="0" step="1000"></label>
+        <label><span>Generation timeout, ms</span><input id="generationTimeoutMs" type="number" min="1000" step="1000"></label>
+        <label><span>Idle settle period, ms</span><input id="idleSettleMs" type="number" min="0" step="100"></label>
+        <label><span>Submit timeout, ms</span><input id="submitTimeoutMs" type="number" min="1000" step="1000"></label>
+        <label><span>Submit-control wait cycles</span><input id="maxSubmitRetries" type="number" min="1" max="10" step="1"></label>
+        <label><span>Persisted log entries</span><input id="loggingMaxEntries" type="number" min="100" max="5000" step="100"></label>
+        <label><span>Verbose poll interval, ms</span><input id="verbosePollIntervalMs" type="number" min="250" step="250"></label>
+        <label><span>Resume checkpoint age, hours</span><input id="resumeMaxAgeHours" type="number" min="1" max="168" step="1"></label>
+      </div>
+      <div class="toggle-list">
+        <label><input id="submitWithEnterFallback" type="checkbox"> Advanced: allow one Enter fallback only when the native Submit click was not dispatched (off by default)</label>
+        <label><input id="waitForImageAfterSubmit" type="checkbox"> Require verified image-generation evidence when image selectors are available</label>
+        <label><input id="adaptiveDomSearch" type="checkbox"> Use adaptive selector discovery when configured selectors change</label>
+        <label><input id="autoResume" type="checkbox"> Automatically resume an interrupted active run on the same tab</label>
+        <label><input id="persistLogs" type="checkbox"> Persist structured run logs for export and diagnosis</label>
+        <label><input id="includeFullPromptText" type="checkbox"> Include full prompt text in diagnostic logs instead of a preview</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Failed-prompt retry and timeout recovery</h2>
+      <p class="hint">A prompt succeeds when the visible generated-image count increases and the composer is ready for the next prompt. Terminal failures are logged and the queue advances automatically. Optional retries occur only when enabled with a positive retry count. Timing changes are saved live and apply to an active run immediately.</p>
+      <div class="grid">
+        <label><span>Prompt retries after first attempt (0 = none)</span><input id="maxPromptRetries" type="number" min="0" step="1"></label>
+        <label><span>Initial retry backoff, ms</span><input id="retryInitialBackoffMs" type="number" min="0" step="1000"></label>
+        <label><span>Maximum retry backoff, ms</span><input id="retryMaxBackoffMs" type="number" min="0" step="1000"></label>
+        <label><span>Reload cycles per attempt</span><input id="maxReloadCyclesPerAttempt" type="number" min="1" max="10" step="1"></label>
+        <label><span>Original-chat reopen timeout, ms</span><input id="reopenTimeoutMs" type="number" min="5000" step="1000"></label>
+        <label><span>Post-reload observation, ms</span><input id="postReloadObservationMs" type="number" min="5000" step="1000"></label>
+        <label><span>Resume observation, ms</span><input id="resumeObservationMs" type="number" min="5000" step="1000"></label>
+      </div>
+      <div class="toggle-list">
+        <label><input id="retryEnabled" type="checkbox"> Retry a failed prompt before logging it and continuing</label>
+        <label><input id="startRetryInNewChat" type="checkbox"> Start failed-prompt retries in a fresh chat when available</label>
+        <label><input id="reloadTimedOutChat" type="checkbox"> Use New chat → original chat recovery after a generation timeout</label>
+      </div>
+      <p class="hint"><strong>Safety invariant:</strong> Prompt Pilot never clicks controls labeled Stop, Cancel, Pause, Abort or Interrupt.</p>
+    </section>
+
+    <section class="card">
+      <h2>Docked control center</h2>
+      <p class="hint">The right-side page panel can be resized directly by dragging its left edge. These defaults are used when the panel opens on a new tab.</p>
+      <div class="grid">
+        <label><span>Default panel width, px</span><input id="panelWidth" type="number" min="320" max="760" step="10"></label>
+      </div>
+      <div class="toggle-list">
+        <label><input id="panelAutoOpenOnSupportedSites" type="checkbox"> Automatically open the docked panel on supported sites</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Prompt parsing</h2>
+      <div class="grid">
+        <label><span>Default parsing mode</span><select id="promptParsingMode"><option value="lines">One prompt per line</option><option value="blocks">Blank line blocks</option><option value="separator">Custom separator</option></select></label>
+        <label><span>Custom separator</span><input id="promptSeparator" type="text"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Downloads</h2>
+      <p class="hint">Downloads use the platform's native full-resolution download button first. Prompt Pilot never cancels that native download. When Chrome exposes the URL, it can additionally save a JPEG with the prompt in EXIF comments.</p>
+      <div class="grid">
+        <label><span>JPEG quality</span><input id="downloadQuality" type="number" min="0.1" max="1" step="0.01"></label>
+        <label><span>Download folder</span><input id="downloadFolder" type="text"></label>
+        <label><span>EXIF max prompt characters</span><input id="exifMaxChars" type="number" min="256" max="12000" step="256"></label>
+        <label><span>Filename template</span><input id="filenameTemplate" type="text"></label>
+        <label><span>Native capture timeout, ms</span><input id="captureTimeoutMs" type="number" min="5000" step="1000"></label>
+        <label><span>Total download operation timeout, ms</span><input id="downloadOperationTimeoutMs" type="number" min="10000" step="1000"></label>
+      </div>
+      <div class="toggle-list">
+        <label><input id="clickNativeButton" type="checkbox"> Press the site's native full-resolution download button</label>
+        <label><input id="captureNativeDownload" type="checkbox"> Try to capture the native download and rewrite as JPEG with EXIF</label>
+        <label><input id="fallbackToPreviewImage" type="checkbox"> Fallback to visible preview image if native download cannot be used</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Site-specific behavior</h2>
+      <div class="toggle-list">
+        <label><input id="geminiCreateImage" type="checkbox"> Gemini: enable Create image mode before running</label>
+        <label><input id="geminiEnsurePro" type="checkbox"> Gemini: select Pro mode before running</label>
+      </div>
+    </section>
+
+    <section class="card editor-card">
+      <div class="title-row">
+        <div>
+          <h2>Site selector configuration</h2>
+          <p class="hint">Edit this JSON to add sites or tune selectors. Each config is selected by URL pattern, then the runner uses its input, submit, busy, image, download and new-chat selectors.</p>
+        </div>
+        <div class="button-row">
+          <button id="validateConfig" class="secondary" type="button">Validate</button>
+          <button id="resetConfig" class="secondary" type="button">Restore defaults</button>
+        </div>
+      </div>
+      <textarea id="siteConfigJson" spellcheck="false"></textarea>
+    </section>
+
+    <footer class="sticky-actions">
+      <span id="statusText">Ready</span>
+      <button id="resetSettings" class="secondary" type="button">Reset settings</button>
+      <button id="saveSettings" class="primary" type="button">Save settings</button>
+    </footer>
+  </main>
+
+  <script src="src/shared/constants.js"></script>
+  <script src="src/shared/default-settings.js"></script>
+  <script src="src/shared/site-configs.js"></script>
+  <script src="src/shared/utils.js"></script>
+  <script src="src/shared/logger.js"></script>
+  <script src="src/shared/settings-repository.js"></script>
+  <script src="src/options/options.js"></script>
+</body>
+</html>

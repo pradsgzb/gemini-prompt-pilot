@@ -1,0 +1,80 @@
+{
+  "manifest_version": 3,
+  "name": "Prompt Pilot - Multi-site Image Automation",
+  "short_name": "Prompt Pilot",
+  "version": "1.1.0",
+  "description": "Resilient prompt automation that detects image-count completion, logs failures, continues the queue, and applies live timing changes.",
+  "minimum_chrome_version": "110",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "tabs",
+    "downloads",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://gemini.google.com/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://seaart.ai/*",
+    "https://www.seaart.ai/*",
+    "https://perplexity.ai/*",
+    "https://www.perplexity.ai/*",
+    "https://*.googleusercontent.com/*",
+    "https://*.openai.com/*",
+    "https://*.blob.core.windows.net/*",
+    "https://*.seaart.ai/*"
+  ],
+  "action": {
+    "default_title": "Prompt Pilot - open docked panel",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "src/background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://seaart.ai/*",
+        "https://www.seaart.ai/*",
+        "https://perplexity.ai/*",
+        "https://www.perplexity.ai/*"
+      ],
+      "js": [
+        "src/shared/constants.js",
+        "src/shared/default-settings.js",
+        "src/shared/site-configs.js",
+        "src/shared/utils.js",
+        "src/shared/logger.js",
+        "src/shared/settings-repository.js",
+        "src/content/dom.js",
+        "src/content/prompt-parser.js",
+        "src/content/site-resolver.js",
+        "src/content/image-converter.js",
+        "src/content/run-checkpoint.js",
+        "src/content/generation-monitor.js",
+        "src/content/navigation-recovery.js",
+        "src/content/automation-runner.js",
+        "src/content/page-panel.js",
+        "src/content/content-main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
